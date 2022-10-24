@@ -1,0 +1,79 @@
+def get_empty_board():
+    return [ [ '.','.','.' ],[ '.','.','.' ],[ '.','.','.' ] ]
+
+#print(get_empty_board()[2][0])
+
+
+    
+def ask_for_input():
+    player_input = input("Please provide position (empty field between A1 and C3): ")
+    rows = player_input[0]
+    columns = player_input[1]
+    coordinates = (rows, columns)
+    return coordinates
+    
+
+
+def is_valid_input(coordinates):
+    rows = coordinates[0]
+    try:
+        columns = int(coordinates[1])
+    except ValueError:
+        columns = None
+    if rows.upper()  in ['A','B','C'] and columns in range(1,4):
+        return True
+    else:
+        return False
+
+
+
+def get_human_coordinates():
+    coordinates = ask_for_input()
+    while is_valid_input(coordinates) == False:
+        coordinates = ask_for_input()
+    else:
+        rows_conversion_dict = {"A": 0, "B": 1, "C": 2}
+        row = rows_conversion_dict[coordinates[0].upper()]
+        column = int(coordinates[1])-1 #-1, so it counts from 0
+        human_coordinates = (row, column)
+        return human_coordinates
+
+
+  
+
+def check_if_position_empty(human_coordinates):
+    player_board = [ [ '.','.','.' ],[ '.','.','.' ],[ '.','.','.' ] ]
+    if player_board[human_coordinates[0]][human_coordinates[1]] == '.':
+        return True
+    else:
+        return False
+
+def is_it_X_or_O(turn_count):
+    if turn_count % 2 == 1:
+        return "X"
+    else:
+        return "O"
+
+def vibeCheck():
+    print(check_if_position_empty(get_human_coordinates()))
+
+
+
+
+def get_winning_player():
+    pass
+
+def is_board_full():
+    pass
+
+def display_board():
+    pass
+
+""" 
+   1   2   3
+A  . | . | .
+  ---+---+---
+B  . | . | .
+  ---+---+---
+C  . | . | .
+"""
