@@ -2,34 +2,29 @@ def get_empty_board():
     return [ [ '.','.','.' ],[ '.','.','.' ],[ '.','.','.' ] ]
 
 #print(get_empty_board()[2][0])
-
-
     
 def ask_for_input():
-    player_input = input("Please provide position (empty field between A1 and C3): ")
-    rows = player_input[0]
-    columns = player_input[1]
-    coordinates = (rows, columns)
+    coordinates = input("Please provide position (empty field between A1 and C3): ")
     return coordinates
-    
 
+def is_valid_input(player_input):
+    if len(player_input) ==2:
+        rows = player_input[0]
+        columns = player_input[1]
+        coordinates = (rows, columns)
+        rows = coordinates[0]
+        try:
+            columns = int(coordinates[1])
+        except ValueError:
+            columns = None
+        if rows.upper()  in ['A','B','C'] and columns in range(1,4):
+            return True
 
-def is_valid_input(coordinates):
-    rows = coordinates[0]
-    try:
-        columns = int(coordinates[1])
-    except ValueError:
-        columns = None
-    if rows.upper()  in ['A','B','C'] and columns in range(1,4):
-        return True
-    else:
-        return False
-
-
+# print(is_valid_input(ask_for_input()))
 
 def get_human_coordinates():
     coordinates = ask_for_input()
-    while is_valid_input(coordinates) == False:
+    while is_valid_input(coordinates) != True:
         coordinates = ask_for_input()
     else:
         rows_conversion_dict = {"A": 0, "B": 1, "C": 2}
@@ -38,8 +33,7 @@ def get_human_coordinates():
         human_coordinates = (row, column)
         return human_coordinates
 
-
-  
+# print(get_human_coordinates())
 
 def check_if_position_empty(human_coordinates):
     player_board = [ [ '.','.','.' ],[ '.','.','.' ],[ '.','.','.' ] ]
@@ -54,26 +48,52 @@ def is_it_X_or_O(turn_count):
     else:
         return "O"
 
-def vibeCheck():
-    print(check_if_position_empty(get_human_coordinates()))
 
+player_board = [ [ 'Y','.','Y' ],[ 'X','Y','.' ],[ 'Y','.','.' ] ]
+# player_board = [ [ 'X','.','.' ],[ 'X','.','.' ],[ 'X','.','.' ] ]
+# player_board = [ [ '.','.','.' ],[ '.','.','.' ],[ '.','.','.' ] ]
 
+#print(get_empty_board()[2][0])
 
-
-def get_winning_player():
-    pass
-
-def is_board_full():
-    pass
-
-def display_board():
-    pass
-
-""" 
+def display_board(player_board):
+    print(
+f"""
    1   2   3
-A  . | . | .
+A  {player_board[0][0]} | {player_board[0][1]} | {player_board[0][2]}
   ---+---+---
-B  . | . | .
+B  {player_board[1][0]} | {player_board[1][1]} | {player_board[1][2]}
   ---+---+---
-C  . | . | .
+C  {player_board[2][0]} | {player_board[2][1]} | {player_board[2][2]}
 """
+)
+
+def get_winning_player(player_board):
+    for i in range (0, 3):
+        for j in range (0, 3):
+            if player_board[i][0] == player_board[i][1] and player_board[i][0] == player_board[i][2] and player_board[i][0] != '.':
+                return(f'wygrana w poziomie gracza {player_board[i][0]}')
+            elif player_board[0][j] == player_board[1][j] and player_board[0][j] == player_board[2][j] and player_board[0][j] !='.':
+                return(f'wygrana w pionie gracza {player_board[0][j]}')
+            elif player_board[0][0] == player_board[1][1] and player_board[0][0] == player_board[2][2] and player_board[0][0] !='.':
+                return (f'wygrana w ukosie gracza {player_board[1][1]}')
+            elif player_board[2][0] == player_board[1][1] and player_board[1][1] == player_board[0][2] and player_board[2][0] !='.':
+                return (f'wygrana w ukosie gracza {player_board[1][1]}')
+    else:
+        return False
+
+display_board(player_board)
+print(get_winning_player(player_board))
+
+def is_board_full(player_board):
+    pass
+
+
+def ask_player_name():
+    player_name = input('Please provide player name, type AI to play against AI: ')
+    if player_name == 'AI':
+        return False
+    else:
+        return player_name
+
+# if player_board[0][0] == player_board[1][0] and player_board[0][0] == player_board[2][0] and player_board[0][0] != '.' :
+#     print(f'GG, player {player_board[0][0]} won')
