@@ -20,7 +20,13 @@ def is_valid_input(player_input):
         if rows.upper()  in ['A','B','C'] and columns in range(1,4):
             return True
 
-# print(is_valid_input(ask_for_input()))
+
+def check_if_position_empty(human_coordinates, player_board):
+    if player_board[human_coordinates[0]][human_coordinates[1]] == '.':
+        return True
+    else:
+        return False
+
 
 def get_human_coordinates():
     coordinates = ask_for_input()
@@ -33,14 +39,6 @@ def get_human_coordinates():
         human_coordinates = (row, column)
         return human_coordinates
 
-# print(get_human_coordinates())
-
-def check_if_position_empty(human_coordinates):
-    player_board = [ [ '.','.','.' ],[ '.','.','.' ],[ '.','.','.' ] ]
-    if player_board[human_coordinates[0]][human_coordinates[1]] == '.':
-        return True
-    else:
-        return False
 
 def is_it_X_or_O(turn_count):
     if turn_count % 2 == 1:
@@ -49,9 +47,9 @@ def is_it_X_or_O(turn_count):
         return "O"
 
 
-player_board = [ [ 'Y','.','Y' ],[ 'X','Y','.' ],[ 'Y','.','.' ] ]
-# player_board = [ [ 'X','.','.' ],[ 'X','.','.' ],[ 'X','.','.' ] ]
-# player_board = [ [ '.','.','.' ],[ '.','.','.' ],[ '.','.','.' ] ]
+# player_board = [ [ 'Y','X','Y' ],[ 'X','Y','X' ],[ 'Y','X','X' ] ]
+# player_board = [ [ 'X','X','X' ],[ 'X','.','.' ],[ 'X','.','.' ] ]
+
 
 #print(get_empty_board()[2][0])
 
@@ -71,22 +69,27 @@ def get_winning_player(player_board):
     for i in range (0, 3):
         for j in range (0, 3):
             if player_board[i][0] == player_board[i][1] and player_board[i][0] == player_board[i][2] and player_board[i][0] != '.':
-                return(f'wygrana w poziomie gracza {player_board[i][0]}')
+                return(f'Player {player_board[i][0]} won')
             elif player_board[0][j] == player_board[1][j] and player_board[0][j] == player_board[2][j] and player_board[0][j] !='.':
-                return(f'wygrana w pionie gracza {player_board[0][j]}')
+                return(f'Player {player_board[0][j]} won')
             elif player_board[0][0] == player_board[1][1] and player_board[0][0] == player_board[2][2] and player_board[0][0] !='.':
-                return (f'wygrana w ukosie gracza {player_board[1][1]}')
+                return (f'Player {player_board[1][1]} won')
             elif player_board[2][0] == player_board[1][1] and player_board[1][1] == player_board[0][2] and player_board[2][0] !='.':
-                return (f'wygrana w ukosie gracza {player_board[1][1]}')
+                return (f'Player {player_board[1][1]} won')
     else:
         return False
 
-display_board(player_board)
-print(get_winning_player(player_board))
+
 
 def is_board_full(player_board):
-    pass
-
+    check_for_full = []
+    for i in range(0,3):
+        for j in range(0,3):
+            check_for_full.append(player_board[i][j])
+    if '.' in check_for_full:
+        return False
+    else:
+        return True
 
 def ask_player_name():
     player_name = input('Please provide player name, type AI to play against AI: ')
@@ -95,5 +98,23 @@ def ask_player_name():
     else:
         return player_name
 
-# if player_board[0][0] == player_board[1][0] and player_board[0][0] == player_board[2][0] and player_board[0][0] != '.' :
-#     print(f'GG, player {player_board[0][0]} won')
+def game():
+    game_board = get_empty_board()
+    turn_count = 1
+    display_board(game_board)
+    while is_board_full(game_board) == False and get_winning_player(game_board) == False:
+        cordinates = get_human_coordinates()
+        while check_if_position_empty(cordinates, game_board) == False:
+            cordinates = get_human_coordinates()
+        else:
+            game_board[cordinates[0]][cordinates[1]] = is_it_X_or_O(turn_count)
+            turn_count +=1
+            display_board(game_board)
+            if get_winning_player(game_board) != False:
+                print(get_winning_player(game_board))
+                break
+            elif is_board_full(game_board) == True:
+                print("The game ended with draw")
+                break
+
+game()
