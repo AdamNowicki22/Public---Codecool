@@ -1,11 +1,13 @@
+from random import randint
+
 def get_empty_board():
     return [ [ '.','.','.' ],[ '.','.','.' ],[ '.','.','.' ] ]
 
-#print(get_empty_board()[2][0])
     
 def ask_for_input():
     coordinates = input("Please provide position (empty field between A1 and C3): ")
     return coordinates
+
 
 def is_valid_input(player_input):
     if len(player_input) ==2:
@@ -32,12 +34,11 @@ def get_human_coordinates():
     coordinates = ask_for_input()
     while is_valid_input(coordinates) != True:
         coordinates = ask_for_input()
-    else:
-        rows_conversion_dict = {"A": 0, "B": 1, "C": 2}
-        row = rows_conversion_dict[coordinates[0].upper()]
-        column = int(coordinates[1])-1 #-1, so it counts from 0
-        human_coordinates = (row, column)
-        return human_coordinates
+    rows_conversion_dict = {"A": 0, "B": 1, "C": 2}
+    row = rows_conversion_dict[coordinates[0].upper()]
+    column = int(coordinates[1])-1
+    human_coordinates = (row, column)
+    return human_coordinates
 
 
 def is_it_X_or_O(turn_count):
@@ -46,12 +47,6 @@ def is_it_X_or_O(turn_count):
     else:
         return "O"
 
-
-# player_board = [ [ 'Y','X','Y' ],[ 'X','Y','X' ],[ 'Y','X','X' ] ]
-# player_board = [ [ 'X','X','X' ],[ 'X','.','.' ],[ 'X','.','.' ] ]
-
-
-#print(get_empty_board()[2][0])
 
 def display_board(player_board):
     print(
@@ -65,56 +60,109 @@ C  {player_board[2][0]} | {player_board[2][1]} | {player_board[2][2]}
 """
 )
 
+
 def get_winning_player(player_board):
     for i in range (0, 3):
-        for j in range (0, 3):
-            if player_board[i][0] == player_board[i][1] and player_board[i][0] == player_board[i][2] and player_board[i][0] != '.':
-                return(f'Player {player_board[i][0]} won')
-            elif player_board[0][j] == player_board[1][j] and player_board[0][j] == player_board[2][j] and player_board[0][j] !='.':
-                return(f'Player {player_board[0][j]} won')
-            elif player_board[0][0] == player_board[1][1] and player_board[0][0] == player_board[2][2] and player_board[0][0] !='.':
-                return (f'Player {player_board[1][1]} won')
-            elif player_board[2][0] == player_board[1][1] and player_board[1][1] == player_board[0][2] and player_board[2][0] !='.':
-                return (f'Player {player_board[1][1]} won')
+        if player_board[i][0] == player_board[i][1] and player_board[i][0] == player_board[i][2] and player_board[i][0] != '.':
+            return True
+        elif player_board[0][i] == player_board[1][i] and player_board[0][i] == player_board[2][i] and player_board[0][i] !='.':
+            return True
+        elif player_board[0][0] == player_board[1][1] and player_board[0][0] == player_board[2][2] and player_board[0][0] !='.':
+            return True
+        elif player_board[2][0] == player_board[1][1] and player_board[1][1] == player_board[0][2] and player_board[2][0] !='.':
+            return True
     else:
-        return False
-
+        return None
 
 
 def is_board_full(player_board):
-    check_for_full = []
     for i in range(0,3):
-        for j in range(0,3):
-            check_for_full.append(player_board[i][j])
-    if '.' in check_for_full:
-        return False
-    else:
-        return True
+        if '.' in player_board[i]:
+            return False
 
-def ask_player_name():
-    player_name = input('Please provide player name, type AI to play against AI: ')
-    if player_name == 'AI':
-        return False
-    else:
-        return player_name
 
 def game():
     game_board = get_empty_board()
     turn_count = 1
     display_board(game_board)
-    while is_board_full(game_board) == False and get_winning_player(game_board) == False:
-        cordinates = get_human_coordinates()
-        while check_if_position_empty(cordinates, game_board) == False:
-            cordinates = get_human_coordinates()
-        else:
-            game_board[cordinates[0]][cordinates[1]] = is_it_X_or_O(turn_count)
-            turn_count +=1
-            display_board(game_board)
-            if get_winning_player(game_board) != False:
-                print(get_winning_player(game_board))
-                break
-            elif is_board_full(game_board) == True:
-                print("The game ended with draw")
-                break
+    while is_board_full(game_board) == False and get_winning_player(game_board) == None:
+        coordinates = get_human_coordinates()
+        while check_if_position_empty(coordinates, game_board) == False:
+            coordinates = get_human_coordinates()
+        game_board[coordinates[0]][coordinates[1]] = is_it_X_or_O(turn_count)     
+        display_board(game_board)
+        if get_winning_player(game_board) == True:
+            print(f'Player {is_it_X_or_O(turn_count)} has won')
+            break
+        elif is_board_full(game_board) == None:
+            print("The game ended with tie")
+            break
+        turn_count +=1
 
 game()
+
+
+def ai_random_move(player_board):
+    ai_move = ((randint(0 ,2)), randint(0, 2))
+    while check_if_position_empty(ai_move, player_board) == False:
+        ai_move = ((randint(0 ,2)), randint(0, 2))
+    else:
+        return ai_move
+
+def game_ai1():
+    game_board = get_empty_board()
+    turn_count = 1
+    display_board(game_board)
+    while is_board_full(game_board) == False and get_winning_player(game_board) == None:
+        coordinates = get_human_coordinates()
+        while check_if_position_empty(coordinates, game_board) == False:
+            coordinates = get_human_coordinates()
+        game_board[coordinates[0]][coordinates[1]] = is_it_X_or_O(turn_count)     
+        display_board(game_board)
+        turn_count +=1
+        ai_coordinates = ai_random_move(game_board)
+        game_board[ai_coordinates[0]][ai_coordinates[1]] = is_it_X_or_O(turn_count)
+        display_board(game_board)
+        if get_winning_player(game_board) == True:
+            print(f'Player {is_it_X_or_O(turn_count)} has won')
+            break
+        elif is_board_full(game_board) == None:
+            print("The game ended with tie")
+            break
+        turn_count +=1
+
+def get_winning_ai_move(player_board, turn_count):
+    ai_board = player_board
+    for i in range(0,3):
+        for j in range(0,3):
+            if ai_board[i][j] == '.':
+                ai_board[i][j] = is_it_X_or_O(turn_count)
+                if get_winning_player(ai_board) == True:
+                    return (i, j)
+                else:
+                    ai_board[i][j] = '.'
+
+def game_ai2():
+    game_board = get_empty_board()
+    turn_count = 1
+    display_board(game_board)
+    while is_board_full(game_board) == False and get_winning_player(game_board) == None:
+        coordinates = get_human_coordinates()
+        while check_if_position_empty(coordinates, game_board) == False:
+            coordinates = get_human_coordinates()
+        game_board[coordinates[0]][coordinates[1]] = is_it_X_or_O(turn_count)     
+        display_board(game_board)
+        turn_count +=1
+        if get_winning_ai_move(game_board, turn_count)!= None:
+            ai_coordinates = get_winning_ai_move(game_board, turn_count)
+        else:
+            ai_coordinates = ai_random_move(game_board)
+        game_board[ai_coordinates[0]][ai_coordinates[1]] = is_it_X_or_O(turn_count)
+        display_board(game_board)
+        if get_winning_player(game_board) == True:
+            print(f'Player {is_it_X_or_O(turn_count)} has won')
+            break
+        elif is_board_full(game_board) == None:
+            print("The game ended with tie")
+            break
+        turn_count +=1
