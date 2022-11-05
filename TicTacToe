@@ -79,6 +79,7 @@ def is_board_full(player_board):
     for i in range(0,3):
         if '.' in player_board[i]:
             return False
+    return True
 
 
 def game():
@@ -94,7 +95,7 @@ def game():
         if get_winning_player(game_board) == True:
             print(f'Player {is_it_X_or_O(turn_count)} has won')
             break
-        elif is_board_full(game_board) == None:
+        elif is_board_full(game_board) == True:
             print("The game ended with tie")
             break
         turn_count +=1
@@ -126,7 +127,7 @@ def game_ai1():
         if get_winning_player(game_board) == True:
             print(f'Player {is_it_X_or_O(turn_count)} has won')
             break
-        elif is_board_full(game_board) == None:
+        elif is_board_full(game_board) == True:
             print("The game ended with tie")
             break
         turn_count +=1
@@ -162,7 +163,7 @@ def game_ai2():
         if get_winning_player(game_board) == True:
             print(f'Player {is_it_X_or_O(turn_count)} has won')
             break
-        elif is_board_full(game_board) == None:
+        elif is_board_full(game_board) == True:
             print("The game ended with tie")
             break
         turn_count +=1
