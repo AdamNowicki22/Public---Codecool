@@ -62,7 +62,7 @@ C  {player_board[2][0]} | {player_board[2][1]} | {player_board[2][2]}
 
 
 def get_winning_player(player_board):
-    for i in range (0, 3):
+    for i in range (3):
         if player_board[i][0] == player_board[i][1] and player_board[i][0] == player_board[i][2] and player_board[i][0] != '.':
             return True
         elif player_board[0][i] == player_board[1][i] and player_board[0][i] == player_board[2][i] and player_board[0][i] !='.':
@@ -76,10 +76,11 @@ def get_winning_player(player_board):
 
 
 def is_board_full(player_board):
-    for i in range(0,3):
+    for i in range(3):
         if '.' in player_board[i]:
             return False
     return True
+
 
 
 def game():
@@ -87,6 +88,7 @@ def game():
     turn_count = 1
     display_board(game_board)
     while is_board_full(game_board) == False and get_winning_player(game_board) == None:
+        print(f'It is player {is_it_X_or_O(turn_count)} turn now')
         coordinates = get_human_coordinates()
         while check_if_position_empty(coordinates, game_board) == False:
             coordinates = get_human_coordinates()
@@ -99,8 +101,6 @@ def game():
             print("The game ended with tie")
             break
         turn_count +=1
-
-game()
 
 
 def ai_random_move(player_board):
@@ -133,7 +133,7 @@ def game_ai1():
         turn_count +=1
 
 def get_winning_ai_move(player_board, turn_count):
-    ai_board = player_board
+    ai_board = player_board.copy()
     for i in range(0,3):
         for j in range(0,3):
             if ai_board[i][j] == '.':
@@ -153,6 +153,12 @@ def game_ai2():
             coordinates = get_human_coordinates()
         game_board[coordinates[0]][coordinates[1]] = is_it_X_or_O(turn_count)     
         display_board(game_board)
+        if get_winning_player(game_board) == True:
+            print(f'Player {is_it_X_or_O(turn_count)} has won')
+            break
+        elif is_board_full(game_board) == True:
+            print("The game ended with tie")
+            break
         turn_count +=1
         if get_winning_ai_move(game_board, turn_count)!= None:
             ai_coordinates = get_winning_ai_move(game_board, turn_count)
@@ -167,3 +173,5 @@ def game_ai2():
             print("The game ended with tie")
             break
         turn_count +=1
+
+game_ai2()
